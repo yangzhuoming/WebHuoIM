@@ -1,5 +1,6 @@
 package net.leonyang.web.huoim.push
 
+import net.leonyang.web.huoim.push.provider.GsonProvider
 import net.leonyang.web.huoim.push.service.AccountService
 import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJsonProvider
 import org.glassfish.jersey.server.ResourceConfig
@@ -12,7 +13,10 @@ class Application: ResourceConfig() {
         packages(AccountService::class.java.name)
 
         //注册Json解析器
-        register(JacksonJsonProvider::class)
+        //register(JacksonJsonProvider::class)
+        // 替换解析器为Gson
+        register(
+            GsonProvider::class)
 
         //注册日志打印输出
         register(Logger::class)
