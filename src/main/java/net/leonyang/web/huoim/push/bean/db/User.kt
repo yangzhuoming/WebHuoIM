@@ -1,12 +1,13 @@
 package net.leonyang.web.huoim.push.bean.db
 
-import org.hibernate.annotations.GenericGenerator
+import org.hibernate.annotations.*
 import javax.persistence.*
 import javax.persistence.GeneratedValue
 import javax.persistence.PrimaryKeyJoinColumn
 import java.time.LocalDateTime
-import org.hibernate.annotations.UpdateTimestamp
-import org.hibernate.annotations.CreationTimestamp
+import javax.persistence.CascadeType
+import javax.persistence.Entity
+import javax.persistence.Table
 
 
 /**
@@ -27,11 +28,11 @@ class User{
     @Column(updatable = false, nullable = false)
     var id: String? = null
 
-    // 用户名必须唯一
+    // 用户名不能为空，必须唯一
     @Column(nullable = false, length = 128, unique = true)
     var name: String? = null
 
-    // 电话必须唯一
+    // 电话不能为空，必须唯一
     @Column(nullable = false, length = 62, unique = true)
     var phone: String? = null
 
@@ -45,7 +46,7 @@ class User{
     @Column
     var description: String? = null
 
-    // 性别有初始值，所有不为空
+    // 性别有初始值，所以不为空
     @Column(nullable = false)
     var sex = 0
 
@@ -70,4 +71,23 @@ class User{
     // 最后一次收到消息的时间
     @Column
     var lastReceivedAt = LocalDateTime.now()
+
+    // 我关注的人的列表方法
+    // 对应的数据库表字段为TB_USER_FOLLOW.originId
+    @JoinColumn(name = "originId")
+    // 定义为懒加载，默认加载User信息的时候，并不查询这个集合
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    // 一对多，一个用户可以有很多关注人，每一次关注都是一个记录
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    var following: Set<UserFollow> = HashSet()
+
+    // 关注我的人的列表
+    // 对应的数据库表字段为TB_USER_FOLLOW.targetId
+    @JoinColumn(name = "targetId")
+    // 定义为懒加载，默认加载User信息的时候，并不查询这个集合
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    // 1对多，一个用户可以被很多人关注，每一次关注都是一个记录
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    var followers: Set<UserFollow> = HashSet()
+
 }

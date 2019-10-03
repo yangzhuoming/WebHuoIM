@@ -20,8 +20,8 @@ class AccountService {
     //指定请求与返回的响应体为JSON
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    fun post(): User {
-        return User("LeonYang")
+    fun post(): User? {
+        return null
     }
 
 }
