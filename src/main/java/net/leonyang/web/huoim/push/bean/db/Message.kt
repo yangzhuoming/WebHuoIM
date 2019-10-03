@@ -68,4 +68,13 @@ class Message {
 
     @Column(updatable = false, insertable = false)
     var receiverId: String? = null
+
+    // 一个群可以接收多个消息
+    @ManyToOne
+    @JoinColumn(name = "groupId")
+    var group: Group? = null
+
+    @Column(updatable = false, insertable = false)
+    var groupId: String? = null
+
 }
