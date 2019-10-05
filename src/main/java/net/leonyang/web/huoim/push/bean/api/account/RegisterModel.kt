@@ -14,6 +14,9 @@ class RegisterModel {
     @Expose
     var name: String? = null
 
+    @Expose
+    var pushId: String? = null
+
     companion object {
         // 校验
         fun check(model: RegisterModel?): Boolean {

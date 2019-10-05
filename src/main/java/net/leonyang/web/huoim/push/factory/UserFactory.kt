@@ -94,9 +94,55 @@ object UserFactory {
         user.phone = account
         return Hib.query(object: Hib.Query<User> {
             override fun query(session: Session): User? {
-                return session.save(user) as User
+                session.save(user)
+                return user
             }
         })
+    }
+
+    fun bindPushId(user: User, pushId: String): User? {
+        if(pushId.isNullOrEmpty()) {
+            return null
+        }
+
+        // 第一步，查询是否有其他账户绑定了这个设备
+        // 取消绑定，避免推送混乱
+        // 查询的列表不能包括自己
+        Hib.queryOnly(object: Hib.QueryOnly {
+            override fun query(session: Session) {
+                val userList: List<User> = session.createQuery("from User where lower(pushId)=:pushId and id!=:userId")
+                    .setParameter("pushId", pushId.toLowerCase())
+                    .setParameter("userId", user.id)
+                    .list() as List<User>
+
+                for(user in userList) {
+                    // 更新为null
+                    user.pushId = null
+                    session.saveOrUpdate(user)
+                }
+            }
+        })
+
+        if (pushId.equals(user.pushId, true)) {
+            // 如果当前需要绑定的设备Id，之前已经绑定过了
+            // 那么不需要额外绑定
+            return user
+        } else {
+            // 如果当前账户之前的设备Id，和需要绑定的不同
+            // 那么需要单点登录，让之前的设备退出账户，
+            // 给之前的设备推送一条退出消息
+            if(user.pushId.isNullOrEmpty()) {//这里的判断可能有问题
+                // TODO 推送一个退出消息
+            }
+            // 更新新的设备Id
+            user.pushId = pushId
+            return Hib.query(object: Hib.Query<User> {
+                override fun query(session: Session): User? {
+                    session.saveOrUpdate(user)
+                    return user
+                }
+            })
+        }
     }
 
     /**

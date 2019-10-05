@@ -10,6 +10,8 @@ class LoginModel {
     var account: String? = null
     @Expose
     var password: String? = null
+    @Expose
+    var pushId: String? = null
 
     companion object {
         // 校验
