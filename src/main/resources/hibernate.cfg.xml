@@ -8,7 +8,7 @@
         <!-- 数据库链接驱动 -->
         <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
         <!--链接地址用户名密码 -->
-        <property name="connection.url">jdbc:mysql://127.0.0.1:3307/DB_I_T_PUSH_TEST?serverTimezone=GMT&amp;useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false</property>
+        <property name="connection.url">jdbc:mysql://127.0.0.1:3307/DB_HUO_IM?serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false</property>
         <property name="connection.username">root</property>
         <property name="connection.password">kobe0728</property>
 
@@ -56,23 +56,23 @@
         -->
 
 
-<!--        <mapping package="net.qiujuer.web.italker.push.bean.db"-->
-<!--                 class="net.qiujuer.web.italker.push.bean.db.User"/>-->
-<!--        <mapping package="net.qiujuer.web.italker.push.bean.db"-->
-<!--                 class="net.qiujuer.web.italker.push.bean.db.UserFollow"/>-->
+        <mapping package="net.leonyang.web.huoim.push.bean.db"
+                 class="net.leonyang.web.huoim.push.bean.db.User"/>
+        <mapping package="net.leonyang.web.huoim.push.bean.db"
+                 class="net.leonyang.web.huoim.push.bean.db.UserFollow"/>
 
-<!--        <mapping package="net.qiujuer.web.italker.push.bean.db"-->
-<!--                 class="net.qiujuer.web.italker.push.bean.db.Group"/>-->
-<!--        <mapping package="net.qiujuer.web.italker.push.bean.db"-->
-<!--                 class="net.qiujuer.web.italker.push.bean.db.GroupMember"/>-->
+        <mapping package="net.leonyang.web.huoim.push.bean.db"
+                 class="net.leonyang.web.huoim.push.bean.db.Group"/>
+        <mapping package="net.leonyang.web.huoim.push.bean.db"
+                 class="net.leonyang.web.huoim.push.bean.db.GroupMember"/>
 
-<!--        <mapping package="net.qiujuer.web.italker.push.bean.db"-->
-<!--                 class="net.qiujuer.web.italker.push.bean.db.Message"/>-->
+        <mapping package="net.leonyang.web.huoim.push.bean.db"
+                 class="net.leonyang.web.huoim.push.bean.db.Message"/>
 
-<!--        <mapping package="net.qiujuer.web.italker.push.bean.db"-->
-<!--                 class="net.qiujuer.web.italker.push.bean.db.PushHistory"/>-->
-<!--        <mapping package="net.qiujuer.web.italker.push.bean.db"-->
-<!--                 class="net.qiujuer.web.italker.push.bean.db.Apply"/>-->
+        <mapping package="net.leonyang.web.huoim.push.bean.db"
+                 class="net.leonyang.web.huoim.push.bean.db.PushHistory"/>
+        <mapping package="net.leonyang.web.huoim.push.bean.db"
+                 class="net.leonyang.web.huoim.push.bean.db.Apply"/>
 
     </session-factory>
 </hibernate-configuration>
