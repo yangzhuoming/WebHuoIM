@@ -100,7 +100,7 @@ object UserFactory {
         })
     }
 
-    fun bindPushId(user: User, pushId: String): User? {
+    fun bindPushId(user: User, pushId: String?): User? {
         if(pushId.isNullOrEmpty()) {
             return null
         }
@@ -123,10 +123,10 @@ object UserFactory {
             }
         })
 
-        if (pushId.equals(user.pushId, true)) {
+        return if (pushId.equals(user.pushId, true)) {
             // 如果当前需要绑定的设备Id，之前已经绑定过了
             // 那么不需要额外绑定
-            return user
+            user
         } else {
             // 如果当前账户之前的设备Id，和需要绑定的不同
             // 那么需要单点登录，让之前的设备退出账户，
@@ -136,13 +136,20 @@ object UserFactory {
             }
             // 更新新的设备Id
             user.pushId = pushId
-            return Hib.query(object: Hib.Query<User> {
-                override fun query(session: Session): User? {
-                    session.saveOrUpdate(user)
-                    return user
-                }
-            })
+            update(user)
         }
+    }
+
+    /**
+     * 更新用户信息到数据库
+     */
+    fun update(user: User): User? {
+        return Hib.query(object: Hib.Query<User> {
+            override fun query(session: Session): User? {
+                session.saveOrUpdate(user)
+                return user
+            }
+        })
     }
 
     /**
@@ -158,12 +165,7 @@ object UserFactory {
         var newToken = TextUtil.encodeBase64(UUID.randomUUID().toString())
         user.token = newToken
 
-        return Hib.query(object: Hib.Query<User> {
-            override fun query(session: Session): User? {
-                session.saveOrUpdate(user)
-                return user
-            }
-        })
+        return update(user)
     }
 
     /**

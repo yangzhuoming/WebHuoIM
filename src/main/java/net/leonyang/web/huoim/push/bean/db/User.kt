@@ -1,6 +1,7 @@
 package net.leonyang.web.huoim.push.bean.db
 
 import org.hibernate.annotations.*
+import java.security.Principal
 import javax.persistence.*
 import javax.persistence.GeneratedValue
 import javax.persistence.PrimaryKeyJoinColumn
@@ -15,7 +16,10 @@ import javax.persistence.Table
  */
 @Entity
 @Table(name = "TB_USER")
-class User{
+class User: Principal {
+    override fun getName(): String? {
+        return name
+    }
 
     // 这是一个主键
     @Id
@@ -31,6 +35,7 @@ class User{
     // 用户名不能为空，必须唯一
     @Column(nullable = false, length = 128, unique = true)
     var name: String? = null
+        @JvmName("getMyName")get
 
     // 电话不能为空，必须唯一
     @Column(nullable = false, length = 62, unique = true)

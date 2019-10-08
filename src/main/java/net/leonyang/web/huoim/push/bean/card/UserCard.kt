@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose
 import net.leonyang.web.huoim.push.bean.db.User
 
 
-class UserCard(user: User) {
+class UserCard(user: User, isFollow: Boolean) {
 
     @Expose
     var id: String? = null
@@ -44,11 +44,13 @@ class UserCard(user: User) {
         desc = user.description
         sex = user.sex
         modifyAt = user.updateAt
-
+        this.isFollow = isFollow
         // TODO 得到关注人和粉丝的数量
         // user.getFollowers().size()
         // 懒加载会报错，因为没有Session
 
     }
+
+    constructor(user: User): this(user, false)
 
 }

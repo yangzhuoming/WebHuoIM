@@ -4,6 +4,7 @@ import net.leonyang.web.huoim.push.bean.api.account.AccountRspModel
 import net.leonyang.web.huoim.push.bean.api.account.LoginModel
 import net.leonyang.web.huoim.push.bean.api.account.RegisterModel
 import net.leonyang.web.huoim.push.bean.api.base.ResponseModel
+import net.leonyang.web.huoim.push.bean.api.user.UpdateInfoModel
 import net.leonyang.web.huoim.push.bean.card.UserCard
 import net.leonyang.web.huoim.push.bean.db.User
 import net.leonyang.web.huoim.push.factory.UserFactory
@@ -12,7 +13,7 @@ import javax.ws.rs.core.MediaType
 
 // http://localhost:8080/api/account
 @Path("/account")
-class AccountService {
+class AccountService: BaseService() {
 
     //http://localhost:8080/api/account/register
     @POST
@@ -40,6 +41,11 @@ class AccountService {
 
         user = UserFactory.register(model.account!!, model.password!!, model.name!!)
         if (null != user) {
+            // 如果有携带PushId
+            if (!model.pushId.isNullOrEmpty()) {
+                return bind(user, model.pushId!!)
+            }
+
             // 返回当前的账户
             val rspModel = AccountRspModel(user)
             return ResponseModel.buildOk(rspModel)
@@ -49,6 +55,7 @@ class AccountService {
         }
     }
 
+    //http://localhost:8080/api/account/login
     // 登录
     @POST
     @Path("/login")
@@ -77,6 +84,8 @@ class AccountService {
         }
     }
 
+    //http://localhost:8080/api/account/bind/"pushId"
+    //还要添加请求头token
     // 绑定设备Id
     @POST
     @Path("/bind/{pushId}")
@@ -85,20 +94,17 @@ class AccountService {
     @Produces(MediaType.APPLICATION_JSON)
     // 从请求头中获取token字段
     // pushId从url地址中获取
-    fun bind(@HeaderParam("token") token: String,
-             @PathParam("pushId") pushId: String): ResponseModel<AccountRspModel> {
+    fun bind(
+        @HeaderParam("token") token: String?,
+        @PathParam("pushId") pushId: String?
+    ): ResponseModel<AccountRspModel> {
         if (token.isNullOrEmpty() || pushId.isNullOrEmpty()) {
             // 返回参数异常
             return ResponseModel.buildParameterError()
         }
         // 拿到自己的个人信息
-        val user = UserFactory.findByToken(token)
-        if(null != user) {
-            return bind(user, pushId)
-        } else {
-            // Token 失效，所有无法进行绑定
-            return ResponseModel.buildAccountError()
-        }
+        val self = getSelf()
+        return bind(self, pushId)
     }
 
     /**
